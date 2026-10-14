@@ -6,7 +6,8 @@ data class RegistroUiState(
     val aceptaTerminos: Boolean = false,
     val errores: RegistroErrores = RegistroErrores(),
     val guardando: Boolean = false,
-    val guardado: Boolean = false
+    val guardado: Boolean = false,
+    val fotoUri: String = ""
 )
 
 data class RegistroErrores(

@@ -1,9 +1,12 @@
 package cl.duoc.myapplication.viewmodels
 
 import android.app.Application
+import android.net.Uri
+import androidx.core.content.FileProvider
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import cl.duoc.myapplication.data.RegistroPreferences
+import java.io.File
 import cl.duoc.myapplication.model.RegistroErrores
 import cl.duoc.myapplication.model.RegistroUiState
 import kotlinx.coroutines.delay
@@ -80,5 +83,24 @@ class RegistroViewModel(application: Application) : AndroidViewModel(application
             preferences.guardar(actual.nombre, actual.correo)
             _estado.update { it.copy(guardando = false, guardado = true) }
         }
+    }
+
+    fun crearFoto(): Uri {
+        val aplicacion = getApplication<Application>()
+        val directorio = File(aplicacion.cacheDir, "fotos")
+        if (!directorio.exists()) {
+            directorio.mkdirs()
+        }
+        val archivo = File(directorio, "foto-${System.currentTimeMillis()}.jpg")
+        archivo.createNewFile()
+        return FileProvider.getUriForFile(
+            aplicacion,
+            "cl.duoc.myapplication.fileprovider",
+            archivo
+        )
+    }
+
+    fun onFotoTomada(uri: String) {
+        _estado.update { it.copy(fotoUri = uri) }
     }
 }
