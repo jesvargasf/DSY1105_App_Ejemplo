@@ -12,11 +12,11 @@ En `app/build.gradle.kts`, el bloque `plugins` queda así:
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.devtools.ksp") version "2.2.10-2.0.2"
+    id("com.google.devtools.ksp") version "2.3.6"
 }
 ```
 
-KSP lee las anotaciones de Room y genera el código del DAO al compilar. La versión `2.2.10-2.0.2` sigue al Kotlin `2.2.10` del proyecto. Si el número de Kotlin cambia, el de KSP tiene que cambiar con él.
+KSP lee las anotaciones de Room y genera el código del DAO al compilar. La versión `2.3.6` es la que entiende el Kotlin integrado de Android Gradle Plugin 9. Desde KSP 2.3 el número ya no copia la versión de Kotlin. Una versión anterior, como `2.2.10-2.0.2`, registra los archivos generados por una vía que este proyecto rechaza.
 
 Dentro de `dependencies`, agrega esto y sincroniza Gradle:
 

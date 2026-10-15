@@ -60,11 +60,11 @@ En `app/build.gradle.kts`, el bloque `plugins` queda así:
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.devtools.ksp") version "2.2.10-2.0.2"
+    id("com.google.devtools.ksp") version "2.3.6"
 }
 ```
 
-`2.2.10-2.0.2` corresponde al Kotlin `2.2.10` del proyecto. El número de KSP tiene que seguir a esa versión de Kotlin.
+`2.3.6` es la versión de KSP que entiende el Kotlin integrado de Android Gradle Plugin 9. Desde KSP 2.3 el número ya no copia la versión de Kotlin.
 
 Dentro de `dependencies`:
 
