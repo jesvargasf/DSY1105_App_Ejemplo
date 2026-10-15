@@ -55,11 +55,15 @@ import cl.duoc.myapplication.navigation.Screen
 import cl.duoc.myapplication.viewmodels.MainViewModel
 import cl.duoc.myapplication.viewmodels.RegistroViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun RegisterScreen(mainViewModel: MainViewModel) {
     val viewModel: RegistroViewModel = viewModel()
     val estado by viewModel.estado.collectAsState()
+    val registros by viewModel.registros.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var intentos by rememberSaveable { mutableStateOf(0) }
@@ -252,6 +256,23 @@ fun RegisterScreen(mainViewModel: MainViewModel) {
                 Text("Datos guardados en el teléfono")
             }
 
+            HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+
+            Text("Registros guardados")
+
+            if (registros.isEmpty()) {
+                Text("Todavía no hay registros")
+            }
+
+            registros.forEach { registro ->
+                Text(registro.nombre)
+                Text(registro.correo)
+                Text(formatoFecha(registro.creadoEn))
+                Button(onClick = { viewModel.borrarRegistro(registro.id) }) {
+                    Text("Borrar")
+                }
+            }
+
             Button(
                 onClick = { mainViewModel.navigateTo(Screen.Home) }
             ) {
@@ -269,4 +290,9 @@ private fun cargarFoto(contexto: Context, uri: String): ImageBitmap? {
         BitmapFactory.decodeStream(entrada, null, opciones)
     } ?: return null
     return bitmap.asImageBitmap()
+}
+
+private fun formatoFecha(millis: Long): String {
+    val formato = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+    return formato.format(Date(millis))
 }

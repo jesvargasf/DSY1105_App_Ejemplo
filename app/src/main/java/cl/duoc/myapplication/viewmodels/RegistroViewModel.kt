@@ -5,6 +5,8 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import cl.duoc.myapplication.data.AppDatabase
+import cl.duoc.myapplication.data.Registro
 import cl.duoc.myapplication.data.RegistroPreferences
 import java.io.File
 import cl.duoc.myapplication.model.RegistroErrores
@@ -18,14 +20,22 @@ import kotlinx.coroutines.launch
 
 class RegistroViewModel(application: Application) : AndroidViewModel(application) {
     private val preferences = RegistroPreferences(application)
+    private val dao = AppDatabase.obtener(application).registroDao()
     private val _estado = MutableStateFlow(RegistroUiState())
     val estado: StateFlow<RegistroUiState> = _estado.asStateFlow()
+    private val _registros = MutableStateFlow<List<Registro>>(emptyList())
+    val registros: StateFlow<List<Registro>> = _registros.asStateFlow()
 
     init {
         viewModelScope.launch {
             val guardado = preferences.leer()
             _estado.update {
                 it.copy(nombre = guardado.nombre, correo = guardado.correo)
+            }
+        }
+        viewModelScope.launch {
+            dao.observar().collect { lista ->
+                _registros.value = lista
             }
         }
     }
@@ -81,6 +91,14 @@ class RegistroViewModel(application: Application) : AndroidViewModel(application
             _estado.update { it.copy(guardando = true) }
             delay(800)
             preferences.guardar(actual.nombre, actual.correo)
+            dao.insertar(
+                Registro(
+                    nombre = actual.nombre,
+                    correo = actual.correo,
+                    fotoUri = actual.fotoUri,
+                    creadoEn = System.currentTimeMillis()
+                )
+            )
             _estado.update { it.copy(guardando = false, guardado = true) }
         }
     }
@@ -102,5 +120,11 @@ class RegistroViewModel(application: Application) : AndroidViewModel(application
 
     fun onFotoTomada(uri: String) {
         _estado.update { it.copy(fotoUri = uri) }
+    }
+
+    fun borrarRegistro(id: Long) {
+        viewModelScope.launch {
+            dao.borrar(id)
+        }
     }
 }
