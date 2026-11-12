@@ -61,6 +61,12 @@ fun HomeScreen(viewModel: MainViewModel) {
                 Text("Registrarse")
             }
 
+            Button(
+                onClick = { viewModel.navigateTo(Screen.Posts) }
+            ) {
+                Text("Ver Posts")
+            }
+
             Spacer(modifier = Modifier.weight(1F))
             Text("Todos los derechos reservados",
                 modifier = Modifier.padding(20.dp))

@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import cl.duoc.myapplication.navigation.NavigationEvent
 import cl.duoc.myapplication.navigation.Screen
 import cl.duoc.myapplication.ui.HomeScreen
+import cl.duoc.myapplication.ui.screens.PostScreen
 import cl.duoc.myapplication.ui.RegisterScreen
 import cl.duoc.myapplication.ui.theme.MyApplicationTheme
 import cl.duoc.myapplication.viewmodels.MainViewModel
@@ -46,6 +47,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Screen.Register.route) {
                         RegisterScreen(mainViewModel = viewModel)
+                    }
+                    composable(Screen.Posts.route) {
+                        PostScreen(navController = navController)
                     }
                 }
             }
